@@ -84,3 +84,22 @@ class TestBooksCollector:
         self.collector.add_book_in_favorites("Маленький котенок")
         favorites = self.collector.get_list_of_favorites_books()
         assert favorites == ["Маленький котенок"]
+
+    # Тест добавления книг с разным количеством символов в названии
+    @pytest.mark.parametrize(
+        "name,expected",
+        [
+            ("", False),               # 0 символов
+            ("a", True),              # 1 символ
+            ("a" * 20, True),         # 20 символов
+            ("a" * 39, True),         # 39 символов
+            ("a" * 40, False),        # 40 символов
+            ("a" * 41, False),        # 41 символ
+            ("a" * 60, False),        # 60 символов
+        ],
+    )
+    def test_add_new_book_varying_name_lengths(self, name, expected):
+        self.collector.add_new_book(name)
+        result = bool(self.collector.get_books_genre().get(name))
+        assert result == expected
+
